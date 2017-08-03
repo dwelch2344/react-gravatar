@@ -15,6 +15,7 @@ class Gravatar extends React.Component {
     className: PropTypes.string,
     protocol: PropTypes.string,
     style: PropTypes.object,
+    renderer: PropTypes.func,
   }
   static defaultProps = {
     size: 50,
@@ -68,6 +69,8 @@ class Gravatar extends React.Component {
       className = `${className} ${this.props.className}`
     }
 
+
+
     // Clone this.props and then delete Component specific props so we can
     // spread the rest into the img.
     let { ...rest } = this.props
@@ -79,33 +82,49 @@ class Gravatar extends React.Component {
     delete rest.style
     delete rest.className
     delete rest.default
-    if (!modernBrowser && isRetina()) {
-      return (
-        <img
-          alt={`Gravatar for ${formattedEmail}`}
-          style={this.props.style}
-          src={retinaSrc}
-          height={this.props.size}
-          width={this.props.size}
-          {...rest}
-          className={className}
-        />
-      )
+    delete rest.renderer
+
+    let renderer
+    if( this.props.renderer ){
+      renderer = this.props.renderer
+    } else if (!modernBrowser && isRetina()) {
+      renderer = legacyRenderer 
+    } else { 
+      renderer = defaultRenderer    
     }
-    return (
-      <img
-        alt={`Gravatar for ${formattedEmail}`}
-        style={this.props.style}
-        src={src}
-        srcSet={`${retinaSrc} 2x`}
-        height={this.props.size}
-        width={this.props.size}
-        {...rest}
-        className={className}
-      />
-    )
+    return renderer(formattedEmail, src, retinaSrc, className, this.props, rest)
   }
 }
+
+function defaultRenderer(formattedEmail, src, retinaSrc, className, props, rest)(
+  return (
+    <img
+      alt={`Gravatar for ${formattedEmail}`}
+      style={props.style}
+      src={src}
+      srcSet={`${retinaSrc} 2x`}
+      height={props.size}
+      width={props.size}
+      {...rest}
+      className={className}
+    />
+  )
+)
+
+function legacyRenderer(formattedEmail, src, retinaSrc, className, props, rest)(
+  return (
+     <img
+        alt={`Gravatar for ${formattedEmail}`}
+        style={props.style}
+        src={retinaSrc}
+        height={props.size}
+        width={props.size}
+        {...rest}
+        className={className}
+     />
+  )
+)
+
 
 
 module.exports = Gravatar
