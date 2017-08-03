@@ -96,7 +96,7 @@ class Gravatar extends React.Component {
   }
 }
 
-function defaultRenderer(formattedEmail, src, retinaSrc, className, props, rest)(
+function defaultRenderer(formattedEmail, src, retinaSrc, className, props, rest){
   return (
     <img
       alt={`Gravatar for ${formattedEmail}`}
@@ -109,9 +109,9 @@ function defaultRenderer(formattedEmail, src, retinaSrc, className, props, rest)
       className={className}
     />
   )
-)
+}
 
-function legacyRenderer(formattedEmail, src, retinaSrc, className, props, rest)(
+function legacyRenderer(formattedEmail, src, retinaSrc, className, props, rest){
   return (
      <img
         alt={`Gravatar for ${formattedEmail}`}
@@ -123,7 +123,7 @@ function legacyRenderer(formattedEmail, src, retinaSrc, className, props, rest)(
         className={className}
      />
   )
-)
+}
 
 
 
